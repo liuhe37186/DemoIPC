@@ -11,7 +11,7 @@ import android.widget.ListView;
 public class ListActivity extends AppCompatActivity {
 
     ListView listView;
-    String[] strings = {"AIDL","Messenger","Binder","Bundle","ContentProvider","Socket","ShareFile","启动Server"};
+    String[] strings = {"AIDL","Messenger","Binder","Bundle","ContentProvider","Socket","ShareFile","启动Server","WebView"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +36,9 @@ public class ListActivity extends AppCompatActivity {
                         Intent intent = new Intent();
                         intent.setClassName("com.liuhe.multiprocessserver","com.liuhe.multiprocessserver.MainActivity");
                         startActivity(intent);
+                        break;
+                    case 8:
+                        startActivity(new Intent(ListActivity.this,WebActivity.class));
                         break;
                 }
             }
