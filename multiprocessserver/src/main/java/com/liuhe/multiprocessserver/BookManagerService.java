@@ -19,8 +19,8 @@ public class BookManagerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mBookList.add(new Book(1,"Android"));
-        mBookList.add(new Book(2,"iOS"));
+//        mBookList.add(new Book(1,"Android"));
+//        mBookList.add(new Book(2,"iOS"));
     }
 
     private CopyOnWriteArrayList<Book> mBookList = new CopyOnWriteArrayList<>();

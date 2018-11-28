@@ -18,6 +18,9 @@ import java.util.Stack;
 public class MainActivity extends AppCompatActivity {
     IBookManager iBookManager;
     TextView result;
+    TextView status;
+    int id=0;
+    boolean isBinder = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         result = findViewById(R.id.tv_result);
+        status = findViewById(R.id.tv_status);
         findViewById(R.id.btn_bind).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -33,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 //                intent.setPackage("com.liuhe.multiprocessserver");
 //                intent.setClassName("com.liuhe.multiprocessserver","com.liuhe.multiprocessserver.MyService");
                 intent.setClassName("com.liuhe.multiprocessserver","com.liuhe.multiprocessserver.BookManagerService");
-                bindService(intent,mConnection,BIND_AUTO_CREATE);
+                isBinder = bindService(intent,mConnection,BIND_AUTO_CREATE);
             }
         });
 
@@ -43,9 +47,6 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     if(iBookManager != null){
-                        Random random = new Random();
-                        Book book = new Book("book"+random.nextInt(100));
-                        iBookManager.addBook(book);
                         List<Book> bookList = iBookManager.getBookList();
                         result.setText(bookList.toString());
                     }
@@ -56,12 +57,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.btn_add_data).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Random random = new Random();
+                Book book = new Book("book"+random.nextInt(100));
+                book.setBookId(id);
+                id++;
+                try {
+                    iBookManager.addBook(book);
+                    Toast.makeText(getApplicationContext(),"增加一条数据",Toast.LENGTH_LONG).show();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             Toast.makeText(getApplicationContext(),"连接成功",Toast.LENGTH_LONG).show();
+            status.setText("连接成功！");
             try {
                 iBookManager = IBookManager.Stub.asInterface(iBinder);
                 iBinder.linkToDeath(mDeathPecipient,0);
@@ -81,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         public void binderDied() {
             if(iBookManager == null){
                 //服务端进程挂掉了
+                status.setText("服务器连接失败，请重新连接！");
                 return;
             }
             iBookManager.asBinder().unlinkToDeath(mDeathPecipient,0);
@@ -90,7 +111,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        unbindService(mConnection);
+        if(mConnection != null && isBinder){
+            unbindService(mConnection);
+            isBinder = false;
+        }
         super.onDestroy();
     }
 }

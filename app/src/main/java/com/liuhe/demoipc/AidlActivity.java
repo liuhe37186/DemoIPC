@@ -63,6 +63,8 @@ public class AidlActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"连接成功",Toast.LENGTH_LONG).show();
             try {
                 iBookManager = IBookManager.Stub.asInterface(iBinder);
+
+//                iBookManager.addBook();
                 iBinder.linkToDeath(mDeathPecipient,0);
             } catch (RemoteException e) {
                 e.printStackTrace();

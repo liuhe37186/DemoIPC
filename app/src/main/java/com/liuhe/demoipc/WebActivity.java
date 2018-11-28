@@ -39,7 +39,7 @@ public class WebActivity extends AppCompatActivity {
             //setTitleText(title);
             webView.loadUrl(url);
         }else {
-            webView.loadUrl("file:///android_asset/www/minfazongze.html");
+            webView.loadUrl("file:///android_asset/www/民法总则.html");
 
         }
 

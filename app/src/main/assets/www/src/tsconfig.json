@@ -1,8 +1,0 @@
-{
-  "files": ["main.ts"],
-  "compilerOptions": {
-    "target": "es5",
-    "module": "amd",
-    "outFile": "../main.js"
-  }
-}
