@@ -11,7 +11,7 @@ import android.widget.ListView;
 public class ListActivity extends AppCompatActivity {
 
     ListView listView;
-    String[] strings = {"AIDL","Messenger","Binder","Bundle","ContentProvider","Socket","ShareFile","启动Server","WebView"};
+    String[] strings = {"AIDL","Messenger","Binder","Bundle","ContentProvider","Socket","ShareFile","启动Server","Handler","Handler2"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +38,10 @@ public class ListActivity extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     case 8:
-                        startActivity(new Intent(ListActivity.this,WebActivity.class));
+                        startActivity(new Intent(ListActivity.this,HandlerActivity.class));
+                        break;
+                    case 9:
+                        startActivity(new Intent(ListActivity.this,HandlerNewActivity.class));
                         break;
                 }
             }
