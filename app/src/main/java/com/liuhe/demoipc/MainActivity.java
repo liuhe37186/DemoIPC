@@ -1,44 +1,53 @@
 package com.liuhe.demoipc;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Handler;
+import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Message;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
-import java.util.Stack;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
     IBookManager iBookManager;
-    TextView result;
-    TextView status;
     int id = 0;
     boolean isBinder = false;
     Intent service;
+    @BindView(R.id.tv_status)
+    TextView tvStatus;
+    @BindView(R.id.tv_result)
+    TextView tvResult;
+    @BindView(R.id.btn_bind)
+    Button btnBind;
+    @BindView(R.id.btn_get_data)
+    Button btnGetData;
+    @BindView(R.id.btn_add_data)
+    Button btnAddData;
+    @BindView(R.id.btn_stop)
+    Button btnStop;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
 
-        result = findViewById(R.id.tv_result);
-        status = findViewById(R.id.tv_status);
-        findViewById(R.id.btn_bind).setOnClickListener(new View.OnClickListener() {
+
+        btnBind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                service = new Intent(MainActivity.this,BookManagerService.class);
+                service = new Intent(MainActivity.this, BookManagerService.class);
 //                intent.setAction("com.mp.binder.service");
 //                intent.setPackage("com.liuhe.multiprocessserver");
 //                intent.setClassName("com.liuhe.multiprocessserver","com.liuhe.multiprocessserver.MyService");
@@ -48,14 +57,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.btn_get_data).setOnClickListener(new View.OnClickListener() {
+        btnGetData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 try {
                     if (iBookManager != null) {
                         List<Book> bookList = iBookManager.getBookList();
-                        result.setText(bookList.toString());
+                        tvResult.setText(bookList.toString());
                     }
 
                 } catch (RemoteException e) {
@@ -64,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.btn_add_data).setOnClickListener(new View.OnClickListener() {
+        btnAddData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Random random = new Random();
@@ -80,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.btn_stop).setOnClickListener(new View.OnClickListener() {
+        btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                stopService(service);
@@ -95,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             Toast.makeText(getApplicationContext(), "连接成功", Toast.LENGTH_LONG).show();
-            status.setText("连接成功！");
+            tvStatus.setText("连接成功！");
             try {
                 iBookManager = IBookManager.Stub.asInterface(iBinder);
 //                IMusicManager musicManager = MusicManagerImpl.asInterface(iBinder);
@@ -117,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         public void binderDied() {
             if (iBookManager == null) {
                 //服务端进程挂掉了
-                status.setText("服务器连接失败，请重新连接！");
+                tvStatus.setText("服务器连接失败，请重新连接！");
                 return;
             }
             iBookManager.asBinder().unlinkToDeath(mDeathPecipient, 0);
@@ -133,12 +142,6 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onDestroy();
     }
-
-
-
-
-
-
 
 
 }
